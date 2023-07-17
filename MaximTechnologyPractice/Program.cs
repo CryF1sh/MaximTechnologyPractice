@@ -2,14 +2,13 @@
 
 Console.WriteLine("Введите строку:");
 string inputStr = Console.ReadLine();
-if (string.IsNullOrEmpty(inputStr))
+//bool Checked = StringCheck(inputStr); 
+if (StringCheck(inputStr))
 {
-    Console.WriteLine("Строка не должна быть пустой!");
-    return;
+    string outputStr = StringProcessing(inputStr);
+    Console.WriteLine("Обработанная строка:");
+    Console.WriteLine(outputStr);
 }
-string outputStr = StringProcessing(inputStr);
-Console.WriteLine("Обработанная строка:");
-Console.WriteLine(outputStr);
 Console.ReadKey();
 
 
@@ -34,4 +33,15 @@ static string StringProcessing(string inputStr)
         resultStr.Append(inputStr);
     }
     return resultStr.ToString();
+}
+
+static bool StringCheck(string inputStr)
+{
+    if (string.IsNullOrEmpty(inputStr))
+    {
+        Console.WriteLine("Строка не должна быть пустой!");
+        return false;
+    }
+
+    return true;
 }
