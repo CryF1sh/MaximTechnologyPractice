@@ -1,8 +1,8 @@
 ﻿using System.Text;
+using System.Text.RegularExpressions;
 
 Console.WriteLine("Введите строку:");
 string inputStr = Console.ReadLine();
-//bool Checked = StringCheck(inputStr); 
 if (StringCheck(inputStr))
 {
     string outputStr = StringProcessing(inputStr);
@@ -35,11 +35,20 @@ static string StringProcessing(string inputStr)
     return resultStr.ToString();
 }
 
+// Метод проверки строки из второго задания
 static bool StringCheck(string inputStr)
 {
     if (string.IsNullOrEmpty(inputStr))
     {
         Console.WriteLine("Строка не должна быть пустой!");
+        return false;
+    }
+
+    // Проверка с использованием регулярного выражения на наличие только английского алфавита в нижнем регистре
+    Regex engLowCaseRegex = new Regex("^[a-z]+$");
+    if (!engLowCaseRegex.IsMatch(inputStr))
+    {
+        Console.WriteLine("Строка должна содержать только буквы английского алфавита в нижнем регистре!");
         return false;
     }
 
