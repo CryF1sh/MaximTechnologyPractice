@@ -49,8 +49,22 @@ static bool StringCheck(string inputStr)
     if (!engLowCaseRegex.IsMatch(inputStr))
     {
         Console.WriteLine("Строка должна содержать только буквы английского алфавита в нижнем регистре!");
+        Console.WriteLine("Неподходящие символы:");
+        foreach (char c in inputStr)
+        {
+            if (!Char.IsLetter(c) || !Char.IsLower(c) || !IsLatinLetter(c))
+            {
+                Console.Write(c + " ");
+            }
+        }
+        Console.WriteLine();
         return false;
     }
 
     return true;
+}
+
+static bool IsLatinLetter(char c)
+{
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 }
