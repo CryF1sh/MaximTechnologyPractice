@@ -9,6 +9,7 @@ if (StringCheck(inputStr))
     Console.WriteLine("Обработанная строка:");
     Console.WriteLine(outputStr);
     Dictionary<char, int> charCount = GetCharCount(outputStr);
+    PrintCharCount(charCount);
 }
 Console.ReadKey();
 
@@ -76,4 +77,14 @@ static Dictionary<char, int> GetCharCount(string str)
     return str
         .GroupBy(c => c)
         .ToDictionary(g => g.Key, g => g.Count());
+}
+
+// Вывод на печать информации о количестве повторений каждого символа из третьего задания
+static void PrintCharCount(Dictionary<char, int> charCount)
+{
+    Console.WriteLine("Информация о количестве повторений каждого символа:");
+    foreach (char ch in charCount.Keys.OrderBy(k => k))
+    {
+        Console.WriteLine($"Символ '{ch}': {charCount[ch]} раз");
+    }
 }
