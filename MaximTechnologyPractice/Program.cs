@@ -8,6 +8,7 @@ if (StringCheck(inputStr))
     string outputStr = StringProcessing(inputStr);
     Console.WriteLine("Обработанная строка:");
     Console.WriteLine(outputStr);
+    Dictionary<char, int> charCount = GetCharCount(outputStr);
 }
 Console.ReadKey();
 
@@ -67,4 +68,12 @@ static bool StringCheck(string inputStr)
 static bool IsLatinLetter(char c)
 {
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+}
+
+// Получение словаря символов с количеством повторений из третьего задания
+static Dictionary<char, int> GetCharCount(string str)
+{
+    return str
+        .GroupBy(c => c)
+        .ToDictionary(g => g.Key, g => g.Count());
 }
