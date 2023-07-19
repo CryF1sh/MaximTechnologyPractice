@@ -8,10 +8,12 @@ if (StringCheck(inputStr))
     string outputStr = StringProcessing(inputStr);
     Console.WriteLine("Обработанная строка:");
     Console.WriteLine(outputStr);
+    Dictionary<char, int> charCount = GetCharCount(outputStr);
+    PrintCharCount(charCount);
 }
 Console.ReadKey();
 
-
+#region Методы Задание #1
 // Метод обработки строки из первого задания
 static string StringProcessing(string inputStr)
 {
@@ -34,7 +36,9 @@ static string StringProcessing(string inputStr)
     }
     return resultStr.ToString();
 }
+#endregion
 
+#region Методы Задание #2
 // Метод проверки строки из второго задания
 static bool StringCheck(string inputStr)
 {
@@ -68,3 +72,24 @@ static bool IsLatinLetter(char c)
 {
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 }
+#endregion
+
+#region Методы Задание #3
+// Получение словаря символов с количеством повторений из третьего задания
+static Dictionary<char, int> GetCharCount(string str)
+{
+    return str
+        .GroupBy(c => c)
+        .ToDictionary(g => g.Key, g => g.Count());
+}
+
+// Вывод на печать информации о количестве повторений каждого символа из третьего задания
+static void PrintCharCount(Dictionary<char, int> charCount)
+{
+    Console.WriteLine("Информация о количестве повторений каждого символа:");
+    foreach (char ch in charCount.Keys.OrderBy(k => k))
+    {
+        Console.WriteLine($"Символ '{ch}': {charCount[ch]} раз");
+    }
+}
+#endregion
