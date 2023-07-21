@@ -10,6 +10,9 @@ if (StringCheck(inputStr))
     Console.WriteLine(outputStr);
     Dictionary<char, int> charCount = GetCharCount(outputStr);
     PrintCharCount(charCount);
+    string longestVowelSubstring = FindLongestSubstring(outputStr);
+    Console.WriteLine("Самая длинная подстрока, начинающаяся и заканчивающаяся на гласную:");
+    Console.WriteLine(longestVowelSubstring);
 }
 Console.ReadKey();
 
@@ -91,5 +94,25 @@ static void PrintCharCount(Dictionary<char, int> charCount)
     {
         Console.WriteLine($"Символ '{ch}': {charCount[ch]} раз");
     }
+}
+#endregion
+
+#region Методы Задание #4
+// Определение самой длинной подстроки начинающаяся и заканчивающаяся на гласную
+static string FindLongestSubstring(string str)
+{
+    // Находим все подстроки, начинающиеся и заканчивающиеся на гласные
+    MatchCollection matchCollection = Regex.Matches(str, @"[aeiouy][a-z]*[aeiouy]");
+
+    // Находим самую длинную подстроку
+    string longestSubstring = string.Empty;
+    foreach (Match match in matchCollection)
+    {
+        if (match.Length > longestSubstring.Length)
+        {
+            longestSubstring = match.Value;
+        }
+    }
+    return longestSubstring;
 }
 #endregion
