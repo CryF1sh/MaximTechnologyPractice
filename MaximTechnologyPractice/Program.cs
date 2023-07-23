@@ -13,6 +13,7 @@ if (StringCheck(inputStr))
     string longestVowelSubstring = FindLongestSubstring(outputStr);
     Console.WriteLine("Самая длинная подстрока, начинающаяся и заканчивающаяся на гласную:");
     Console.WriteLine(longestVowelSubstring);
+    AskSort(outputStr);
 }
 Console.ReadKey();
 
@@ -114,5 +115,43 @@ static string FindLongestSubstring(string str)
         }
     }
     return longestSubstring;
+}
+#endregion
+
+#region Методы Задание #5
+// Спросить об желаемом алгоритме сортировки (Быстрая сортировка или Сортировка деревом)
+static void AskSort(string str)
+{
+    Console.WriteLine("Выберете метод сортировки:");
+    Console.WriteLine("1. Быстрая сортировка");
+    Console.WriteLine("2. Сортировка деревом");
+    int chSort = int.Parse(Console.ReadLine());
+    switch(chSort)
+    {
+        case 1:
+            {
+                break;
+            }
+        case 2:
+            {
+                break;
+            }
+        default:
+            {
+                Console.WriteLine("Неккорктный выбор сортировки");
+                break;
+            }
+    }
+}
+
+static string QuickSort(string str)
+{
+    string sortedResult = string.Concat(str.ToString().OrderBy(c => c));
+    return sortedResult;
+}
+
+static char[] TreeSort(string str)
+{
+
 }
 #endregion
