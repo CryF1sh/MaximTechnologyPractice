@@ -124,12 +124,14 @@ static void AskSort(string str)
 {
     Console.WriteLine("Выберете метод сортировки:");
     Console.WriteLine("1. Быстрая сортировка");
-    Console.WriteLine("2. Сортировка деревом");
+    Console.WriteLine("2. Сортировка деревом\n");
     int chSort = int.Parse(Console.ReadLine());
     switch(chSort)
     {
         case 1:
             {
+                Console.WriteLine("Отсортировання строка методом быстрой сортировки:");
+                Console.WriteLine(QuickSort(str));
                 break;
             }
         case 2:
@@ -150,8 +152,8 @@ static string QuickSort(string str)
     return sortedResult;
 }
 
-static char[] TreeSort(string str)
-{
-
-}
+//static char[] TreeSort(string str)
+//{
+    
+//}
 #endregion
