@@ -17,7 +17,7 @@ if (StringCheck(inputStr))
     Console.WriteLine("\nСамая длинная подстрока, начинающаяся и заканчивающаяся на гласную:");
     Console.WriteLine(longestVowelSubstring);
     AskSort(outputStr);
-    int randomNumber = GetRandomNumber(outputStr);
+    int randomNumber = await GetRandomNumber(outputStr);
     Console.WriteLine("«Урезанная» обработанная строка: " + DeleteRandomChar(outputStr, randomNumber));
 }
 Console.ReadKey();
@@ -173,10 +173,15 @@ static string TreeSort(string str)
 #endregion
 
 #region Методы Задание #6
-static int GetRandomNumber(string str)
+static async Task<int> GetRandomNumber(string str)
 {
-    string apiUrl = $"http://www.randomnumberapi.com/api/v1.0/randomnumber?min=0&max={str.Length-1}&count=1";
+    string apiUrl = $"http://www.randomnumberapi.com/api/v1.0/randomnumber?min=1&max={str.Length}&count=1";
     int randomNumber;
+
+    // Показываем интерактивное сообщение об ожидании
+    CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+    Task showWaitingMessageTask = ShowWaitingMessageAsync(cancellationTokenSource.Token);
+
     try
     {
         using (HttpClient httpClient = new HttpClient())
@@ -190,8 +195,15 @@ static int GetRandomNumber(string str)
     catch
     {
         Random random = new Random();
-        randomNumber = random.Next(0, str.Length-1);
+        randomNumber = random.Next(1, str.Length);
         Console.WriteLine($"\nСгенерировано рандомное число: {randomNumber}");
+    }
+    finally
+    {
+        // Отменяем задачу показа сообщения об ожидании
+        cancellationTokenSource.Cancel();
+        await showWaitingMessageTask;
+        Console.Write($"\r"+ new string(' ',0));
     }
     return randomNumber;
 }
@@ -202,6 +214,30 @@ static string DeleteRandomChar(string str, int randomNumber)
     return str;
 }
 #endregion
+//Прикольный Taskbar с сообщением об ожидании
+static async Task ShowWaitingMessageAsync(CancellationToken cancellationToken)
+{
+    string waitingMessage = "Ожидайте";
+    try
+    {
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            Console.Write($"\r{waitingMessage}   ");
+            await Task.Delay(500, cancellationToken);
+            Console.Write($"\r{waitingMessage}.  ");
+            await Task.Delay(500, cancellationToken);
+            Console.Write($"\r{waitingMessage}.. ");
+            await Task.Delay(500, cancellationToken);
+            Console.Write($"\r{waitingMessage}...");
+            await Task.Delay(500, cancellationToken);
+        }
+        Console.Write("\r" + new string(' ', waitingMessage.Length + 3)); // Очищаем текст сообщения
+    }
+    catch
+    {
+        Console.Write("\r" + new string(' ', waitingMessage.Length + 3)); // Очищаем текст сообщения
+    }
+}
 
 #region Классы Задание #5
 public class TreeNode
