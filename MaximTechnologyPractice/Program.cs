@@ -11,8 +11,9 @@ if (StringCheck(inputStr))
     Dictionary<char, int> charCount = GetCharCount(outputStr);
     PrintCharCount(charCount);
     string longestVowelSubstring = FindLongestSubstring(outputStr);
-    Console.WriteLine("Самая длинная подстрока, начинающаяся и заканчивающаяся на гласную:");
+    Console.WriteLine("\nСамая длинная подстрока, начинающаяся и заканчивающаяся на гласную:");
     Console.WriteLine(longestVowelSubstring);
+    AskSort(outputStr);
 }
 Console.ReadKey();
 
@@ -114,5 +115,110 @@ static string FindLongestSubstring(string str)
         }
     }
     return longestSubstring;
+}
+#endregion
+
+#region Методы Задание #5
+// Спросить об желаемом алгоритме сортировки (Быстрая сортировка или Сортировка деревом)
+static void AskSort(string str)
+{
+    Console.WriteLine("Выберете метод сортировки:");
+    Console.WriteLine("1. Быстрая сортировка");
+    Console.WriteLine("2. Сортировка деревом\n");
+    int chSort = int.Parse(Console.ReadLine());
+    switch(chSort)
+    {
+        case 1:
+            {
+                Console.WriteLine("Отсортировання строка методом быстрой сортировки:");
+                Console.WriteLine(QuickSort(str));
+                break;
+            }
+        case 2:
+            {
+                Console.WriteLine("Отсортировання строка методом сортировки деревом:");
+                Console.WriteLine(TreeSort(str));
+                break;
+            }
+        default:
+            {
+                Console.WriteLine("Неккорктный выбор сортировки");
+                break;
+            }
+    }
+}
+
+static string QuickSort(string str)
+{
+    string sortedResult = string.Concat(str.ToString().OrderBy(c => c));
+    return sortedResult;
+}
+
+static string TreeSort(string str)
+{
+    TreeNode root = new TreeNode(str[0]);
+    for (int i = 1; i < str.Length; i++)
+    {
+        TreeSortClass.Insert(root, str[i]);
+    }
+    List<char> sortedChars = new List<char>();
+    TreeSortClass.OrderTraversal(root, sortedChars);
+    return new string(sortedChars.ToArray());
+}
+#endregion
+
+#region Классы Задание #5
+public class TreeNode
+{
+    public char Value;
+    public TreeNode Left;
+    public TreeNode Right;
+
+    public TreeNode(char value)
+    {
+        Value = value;
+        Left = null;
+        Right = null;
+    }
+}
+public class TreeSortClass
+{
+    // Метод для вставки элемента в дерево
+    public static void Insert(TreeNode node, char value)
+    {
+        if (value < node.Value)
+        {
+            if (node.Left == null)
+            {
+                node.Left = new TreeNode(value);
+            }
+            else
+            {
+                Insert(node.Left, value);
+            }
+        }
+        else
+        {
+            if (node.Right == null)
+            {
+                node.Right = new TreeNode(value);
+            }
+            else
+            {
+                Insert(node.Right, value);
+            }
+        }
+    }
+
+    // Метод для обхода дерева в порядке возрастания
+    public static void OrderTraversal(TreeNode node, List<char> result)
+    {
+        if (node != null)
+        {
+            OrderTraversal(node.Left, result);
+            result.Add(node.Value);
+            OrderTraversal(node.Right, result);
+        }
+    }
 }
 #endregion
