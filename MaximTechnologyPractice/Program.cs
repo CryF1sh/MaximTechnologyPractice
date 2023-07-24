@@ -11,7 +11,7 @@ if (StringCheck(inputStr))
     Dictionary<char, int> charCount = GetCharCount(outputStr);
     PrintCharCount(charCount);
     string longestVowelSubstring = FindLongestSubstring(outputStr);
-    Console.WriteLine("Самая длинная подстрока, начинающаяся и заканчивающаяся на гласную:");
+    Console.WriteLine("\nСамая длинная подстрока, начинающаяся и заканчивающаяся на гласную:");
     Console.WriteLine(longestVowelSubstring);
     AskSort(outputStr);
 }
@@ -136,6 +136,8 @@ static void AskSort(string str)
             }
         case 2:
             {
+                Console.WriteLine("Отсортировання строка методом сортировки деревом:");
+                Console.WriteLine(TreeSort(str));
                 break;
             }
         default:
@@ -152,8 +154,71 @@ static string QuickSort(string str)
     return sortedResult;
 }
 
-//static char[] TreeSort(string str)
-//{
-    
-//}
+static string TreeSort(string str)
+{
+    TreeNode root = new TreeNode(str[0]);
+    for (int i = 1; i < str.Length; i++)
+    {
+        TreeSortClass.Insert(root, str[i]);
+    }
+    List<char> sortedChars = new List<char>();
+    TreeSortClass.OrderTraversal(root, sortedChars);
+    return new string(sortedChars.ToArray());
+}
+#endregion
+
+#region Классы Задание #5
+public class TreeNode
+{
+    public char Value;
+    public TreeNode Left;
+    public TreeNode Right;
+
+    public TreeNode(char value)
+    {
+        Value = value;
+        Left = null;
+        Right = null;
+    }
+}
+public class TreeSortClass
+{
+    // Метод для вставки элемента в дерево
+    public static void Insert(TreeNode node, char value)
+    {
+        if (value < node.Value)
+        {
+            if (node.Left == null)
+            {
+                node.Left = new TreeNode(value);
+            }
+            else
+            {
+                Insert(node.Left, value);
+            }
+        }
+        else
+        {
+            if (node.Right == null)
+            {
+                node.Right = new TreeNode(value);
+            }
+            else
+            {
+                Insert(node.Right, value);
+            }
+        }
+    }
+
+    // Метод для обхода дерева в порядке возрастания
+    public static void OrderTraversal(TreeNode node, List<char> result)
+    {
+        if (node != null)
+        {
+            OrderTraversal(node.Left, result);
+            result.Add(node.Value);
+            OrderTraversal(node.Right, result);
+        }
+    }
+}
 #endregion
