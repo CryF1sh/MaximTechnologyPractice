@@ -18,6 +18,7 @@ if (StringCheck(inputStr))
     Console.WriteLine(longestVowelSubstring);
     AskSort(outputStr);
     int randomNumber = GetRandomNumber(outputStr);
+    Console.WriteLine("«Урезанная» обработанная строка: " + DeleteRandomChar(outputStr, randomNumber));
 }
 Console.ReadKey();
 
@@ -172,10 +173,9 @@ static string TreeSort(string str)
 #endregion
 
 #region Методы Задание #6
-
 static int GetRandomNumber(string str)
 {
-    string apiUrl = $"http://www.randomnumberapi.com/api/v1.0/randomnumber?min=1&max={str.Length}&count=1";
+    string apiUrl = $"http://www.randomnumberapi.com/api/v1.0/randomnumber?min=0&max={str.Length-1}&count=1";
     int randomNumber;
     try
     {
@@ -190,10 +190,16 @@ static int GetRandomNumber(string str)
     catch
     {
         Random random = new Random();
-        randomNumber = random.Next(1, str.Length);
+        randomNumber = random.Next(0, str.Length-1);
         Console.WriteLine($"\nСгенерировано рандомное число: {randomNumber}");
     }
     return randomNumber;
+}
+
+static string DeleteRandomChar(string str, int randomNumber)
+{
+    str = str.Remove(randomNumber-1, 1);
+    return str;
 }
 #endregion
 
