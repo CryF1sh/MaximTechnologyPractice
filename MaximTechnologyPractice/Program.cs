@@ -1,5 +1,8 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
+using System.Net.Http;
+using System.Diagnostics;
+using System.Text.Json;
 
 Console.WriteLine("Введите строку:");
 string inputStr = Console.ReadLine();
@@ -14,6 +17,7 @@ if (StringCheck(inputStr))
     Console.WriteLine("\nСамая длинная подстрока, начинающаяся и заканчивающаяся на гласную:");
     Console.WriteLine(longestVowelSubstring);
     AskSort(outputStr);
+    int randomNumber = GetRandomNumber(outputStr);
 }
 Console.ReadKey();
 
@@ -126,7 +130,7 @@ static void AskSort(string str)
     Console.WriteLine("1. Быстрая сортировка");
     Console.WriteLine("2. Сортировка деревом\n");
     int chSort = int.Parse(Console.ReadLine());
-    switch(chSort)
+    switch (chSort)
     {
         case 1:
             {
@@ -164,6 +168,32 @@ static string TreeSort(string str)
     List<char> sortedChars = new List<char>();
     TreeSortClass.OrderTraversal(root, sortedChars);
     return new string(sortedChars.ToArray());
+}
+#endregion
+
+#region Методы Задание #6
+
+static int GetRandomNumber(string str)
+{
+    string apiUrl = $"http://www.randomnumberapi.com/api/v1.0/randomnumber?min=1&max={str.Length}&count=1";
+    int randomNumber;
+    try
+    {
+        using (HttpClient httpClient = new HttpClient())
+        {
+            string result = httpClient.GetStringAsync(apiUrl).Result;
+            int[] numbers = JsonSerializer.Deserialize<int[]>(result);
+            randomNumber = numbers[0];
+            Console.WriteLine($"\nПолучено рандомное число: {randomNumber}");
+        }
+    }
+    catch
+    {
+        Random random = new Random();
+        randomNumber = random.Next(1, str.Length);
+        Console.WriteLine($"\nСгенерировано рандомное число: {randomNumber}");
+    }
+    return randomNumber;
 }
 #endregion
 
