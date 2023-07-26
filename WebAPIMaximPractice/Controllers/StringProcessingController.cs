@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Text;
+using Microsoft.Extensions.Options;
 
 namespace WebAPIMaximPractice.Controllers
 {
@@ -10,11 +11,24 @@ namespace WebAPIMaximPractice.Controllers
     [ApiController]
     public class StringProcessingController : ControllerBase
     {
+        private readonly AppSettings _appSettings;
+
+        public StringProcessingController(IOptions<AppSettings> appSettings)
+        {
+            _appSettings = appSettings.Value;
+        }
+
+
         // Пример ввода http://localhost:5167/api/StringProcessing?inputStr={ваша строка}
 
         [HttpGet]
         public async Task<IActionResult> ProcessString([FromQuery] string inputStr)
         {
+            if (WordBlackList(inputStr))
+            {
+                return BadRequest("Слово находится в чёрном списке!");
+            }
+
             if (StringCheck(inputStr))
             {
                 string outputStr = StringProcessing(inputStr);
@@ -190,9 +204,11 @@ namespace WebAPIMaximPractice.Controllers
         #endregion
 
         #region Методы Задание #6
-        static async Task<int> GetRandomNumber(string str)
+        private async Task<int> GetRandomNumber(string str)
         {
-            string apiUrl = $"http://www.randomnumberapi.com/api/v1.0/randomnumber?min=1&max={str.Length}&count=1";
+            string apiUrl = $"{_appSettings.UrlApi}?min=1&max={str.Length}&count=1"; //string apiUrl = $"http://www.randomnumberapi.com/api/v1.0/randomnumber?min=1&max={str.Length}&count=1";
+            await Console.Out.WriteLineAsync(apiUrl);
+
             int randomNumber;
 
             //// Показываем интерактивное сообщение об ожидании
@@ -203,7 +219,7 @@ namespace WebAPIMaximPractice.Controllers
             {
                 using (HttpClient httpClient = new HttpClient())
                 {
-                    string result = httpClient.GetStringAsync(apiUrl).Result;
+                    string result = await httpClient.GetStringAsync(apiUrl);
                     int[] numbers = JsonSerializer.Deserialize<int[]>(result);
                     randomNumber = numbers[0];
                     Console.WriteLine($"\nПолучено рандомное число: {randomNumber}");
@@ -255,6 +271,20 @@ namespace WebAPIMaximPractice.Controllers
                 Console.Write("\r" + new string(' ', waitingMessage.Length + 3)); // Очищаем текст сообщения
             }
         }
+
+        #region Методы Задание #8
+        private bool WordBlackList(string inputStr)
+        {
+            if (_appSettings?.BlackList == null)
+            {
+                return false;
+            }
+            //Использую HashSet вместо List для более быстрой работы чёрного списка
+            HashSet<string> blackList = new HashSet<string>(_appSettings.BlackList);
+
+            return blackList.Contains(inputStr);
+        }
+        #endregion
 
         #region Классы Задание #5
         public class TreeNode
