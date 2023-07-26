@@ -10,11 +10,25 @@ namespace WebAPIMaximPractice.Controllers
     [ApiController]
     public class StringProcessingController : ControllerBase
     {
+        private readonly IConfiguration _configuration;
+        private readonly AppSettings _appSettings;
+
+        public StringProcessingController(IConfiguration configuration, AppSettings appSettings)
+        {
+            _configuration = configuration;
+            _appSettings = appSettings;
+        }
+
         // Пример ввода http://localhost:5167/api/StringProcessing?inputStr={ваша строка}
 
         [HttpGet]
         public async Task<IActionResult> ProcessString([FromQuery] string inputStr)
         {
+            if (WordBlackList(inputStr))
+            {
+                return BadRequest("Слово находится в чёрном списке!");
+            }
+
             if (StringCheck(inputStr))
             {
                 string outputStr = StringProcessing(inputStr);
@@ -190,9 +204,10 @@ namespace WebAPIMaximPractice.Controllers
         #endregion
 
         #region Методы Задание #6
-        static async Task<int> GetRandomNumber(string str)
+        private async Task<int> GetRandomNumber(string str)
         {
-            string apiUrl = $"http://www.randomnumberapi.com/api/v1.0/randomnumber?min=1&max={str.Length}&count=1";
+            AppSettings appSettings = _configuration.Get<AppSettings>();
+            string apiUrl = $"{appSettings.UrlApi}?min=1&max={str.Length}&count=1";
             int randomNumber;
 
             //// Показываем интерактивное сообщение об ожидании
@@ -255,6 +270,21 @@ namespace WebAPIMaximPractice.Controllers
                 Console.Write("\r" + new string(' ', waitingMessage.Length + 3)); // Очищаем текст сообщения
             }
         }
+
+        #region Методы Задание #8
+        private bool WordBlackList(string inputStr)
+        {
+            AppSettings appSettings = _configuration.Get<AppSettings>();
+            if (appSettings?.BlackList == null)
+            {
+                return false;
+            }
+            //Использую HashSet вместо List для более быстрой работы чёрного списка
+            HashSet<string> blackList = new HashSet<string>(appSettings.BlackList);
+
+            return blackList.Contains(inputStr);
+        }
+        #endregion
 
         #region Классы Задание #5
         public class TreeNode
