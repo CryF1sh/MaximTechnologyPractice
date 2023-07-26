@@ -206,7 +206,9 @@ namespace WebAPIMaximPractice.Controllers
         #region Методы Задание #6
         private async Task<int> GetRandomNumber(string str)
         {
-            string apiUrl = $"{_appSettings.UrlApi}?min=1&max={str.Length}&count=1";
+            string apiUrl = $"{_appSettings.UrlApi}?min=1&max={str.Length}&count=1"; //string apiUrl = $"http://www.randomnumberapi.com/api/v1.0/randomnumber?min=1&max={str.Length}&count=1";
+            await Console.Out.WriteLineAsync(apiUrl);
+
             int randomNumber;
 
             //// Показываем интерактивное сообщение об ожидании
@@ -217,7 +219,7 @@ namespace WebAPIMaximPractice.Controllers
             {
                 using (HttpClient httpClient = new HttpClient())
                 {
-                    string result = httpClient.GetStringAsync(apiUrl).Result;
+                    string result = await httpClient.GetStringAsync(apiUrl);
                     int[] numbers = JsonSerializer.Deserialize<int[]>(result);
                     randomNumber = numbers[0];
                     Console.WriteLine($"\nПолучено рандомное число: {randomNumber}");
