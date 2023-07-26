@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Text;
+using Microsoft.Extensions.Options;
 
 namespace WebAPIMaximPractice.Controllers
 {
@@ -10,14 +11,13 @@ namespace WebAPIMaximPractice.Controllers
     [ApiController]
     public class StringProcessingController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
         private readonly AppSettings _appSettings;
 
-        public StringProcessingController(IConfiguration configuration, AppSettings appSettings)
+        public StringProcessingController(IOptions<AppSettings> appSettings)
         {
-            _configuration = configuration;
-            _appSettings = appSettings;
+            _appSettings = appSettings.Value;
         }
+
 
         // Пример ввода http://localhost:5167/api/StringProcessing?inputStr={ваша строка}
 
@@ -206,8 +206,7 @@ namespace WebAPIMaximPractice.Controllers
         #region Методы Задание #6
         private async Task<int> GetRandomNumber(string str)
         {
-            AppSettings appSettings = _configuration.Get<AppSettings>();
-            string apiUrl = $"{appSettings.UrlApi}?min=1&max={str.Length}&count=1";
+            string apiUrl = $"{_appSettings.UrlApi}?min=1&max={str.Length}&count=1";
             int randomNumber;
 
             //// Показываем интерактивное сообщение об ожидании
@@ -274,13 +273,12 @@ namespace WebAPIMaximPractice.Controllers
         #region Методы Задание #8
         private bool WordBlackList(string inputStr)
         {
-            AppSettings appSettings = _configuration.Get<AppSettings>();
-            if (appSettings?.BlackList == null)
+            if (_appSettings?.BlackList == null)
             {
                 return false;
             }
             //Использую HashSet вместо List для более быстрой работы чёрного списка
-            HashSet<string> blackList = new HashSet<string>(appSettings.BlackList);
+            HashSet<string> blackList = new HashSet<string>(_appSettings.BlackList);
 
             return blackList.Contains(inputStr);
         }
