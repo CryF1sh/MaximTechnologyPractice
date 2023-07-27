@@ -12,6 +12,8 @@ namespace WebAPIMaximPractice.Controllers
     public class StringProcessingController : ControllerBase
     {
         private readonly AppSettings _appSettings;
+        private static int _currentRequestCount = 0;
+        private static object _lockObject = new object();
 
         public StringProcessingController(IOptions<AppSettings> appSettings)
         {
@@ -24,33 +26,58 @@ namespace WebAPIMaximPractice.Controllers
         [HttpGet]
         public async Task<IActionResult> ProcessString([FromQuery] string inputStr)
         {
-            if (WordBlackList(inputStr))
+            if (CheckRequestsLimited())
             {
-                return BadRequest("Слово находится в чёрном списке!");
+                return StatusCode(503, "Service Unavailable");
             }
-
-            if (StringCheck(inputStr))
+            try
             {
-                string outputStr = StringProcessing(inputStr);
-                Dictionary<char, int> charCount = GetCharCount(outputStr);
-                string longestVowelSubstring = FindLongestSubstring(outputStr);
-                string sortedStr = QuickSort(outputStr);
-                int randomNumber = await GetRandomNumber(outputStr);
-
-                var result = new
+                lock (_lockObject)
                 {
-                    ProcessedString = outputStr,
-                    CharCount = charCount,
-                    LongestVowelSubstring = longestVowelSubstring,
-                    SortedString = sortedStr,
-                    TrimmedProcessedString = DeleteRandomChar(outputStr, randomNumber)
-                };
+                    _currentRequestCount++;
+                    Console.WriteLine($"Текущее количество активных запросов: {_currentRequestCount}");
+                }
 
-                return Ok(result);
+                if (WordBlackList(inputStr))
+                {
+                    return BadRequest("Слово находится в чёрном списке!");
+                }
+
+                if (StringCheck(inputStr))
+                {
+                    string outputStr = StringProcessing(inputStr);
+                    Dictionary<char, int> charCount = GetCharCount(outputStr);
+                    string longestVowelSubstring = FindLongestSubstring(outputStr);
+                    string sortedStr = QuickSort(outputStr);
+                    int randomNumber = await GetRandomNumber(outputStr);
+
+                    var result = new
+                    {
+                        ProcessedString = outputStr,
+                        CharCount = charCount,
+                        LongestVowelSubstring = longestVowelSubstring,
+                        SortedString = sortedStr,
+                        TrimmedProcessedString = DeleteRandomChar(outputStr, randomNumber)
+                    };
+
+                    return Ok(result);
+                }
+                else
+                {
+                    return BadRequest("Строка должна содержать только буквы английского алфавита в нижнем регистре!");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return BadRequest("Строка должна содержать только буквы английского алфавита в нижнем регистре!");
+                return StatusCode(418, ex);
+            }
+            finally
+            {
+                lock (_lockObject)
+                {
+                    _currentRequestCount--;
+                    Console.WriteLine($"Текущее количество активных запросов: {_currentRequestCount}");
+                }
             }
         }
         #region Методы Задание #1
@@ -284,6 +311,19 @@ namespace WebAPIMaximPractice.Controllers
 
             return blackList.Contains(inputStr);
         }
+        #endregion
+
+        #region Методы Задание #9
+
+        private bool CheckRequestsLimited()
+        {
+            int maxLimit = _appSettings.ParallelLimit;
+            lock (_lockObject)
+            {
+                return _currentRequestCount >= maxLimit;
+            }
+        }
+
         #endregion
 
         #region Классы Задание #5
