@@ -82,7 +82,7 @@ namespace WebAPIMaximPractice.Controllers
         }
         #region Методы Задание #1
         // Метод обработки строки из первого задания
-        static string StringProcessing(string inputStr)
+        public static string StringProcessing(string inputStr)
         {
             StringBuilder resultStr = new StringBuilder();
             if (inputStr.Length % 2 == 0)
@@ -107,7 +107,7 @@ namespace WebAPIMaximPractice.Controllers
 
         #region Методы Задание #2
         // Метод проверки строки из второго задания
-        static bool StringCheck(string inputStr)
+        public static bool StringCheck(string inputStr)
         {
             if (string.IsNullOrEmpty(inputStr))
             {
@@ -135,7 +135,7 @@ namespace WebAPIMaximPractice.Controllers
             return true;
         }
 
-        static bool IsLatinLetter(char c)
+        public static bool IsLatinLetter(char c)
         {
             return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
         }
@@ -143,7 +143,7 @@ namespace WebAPIMaximPractice.Controllers
 
         #region Методы Задание #3
         // Получение словаря символов с количеством повторений из третьего задания
-        static Dictionary<char, int> GetCharCount(string str)
+        public static Dictionary<char, int> GetCharCount(string str)
         {
             return str
                 .GroupBy(c => c)
@@ -151,7 +151,7 @@ namespace WebAPIMaximPractice.Controllers
         }
 
         // Вывод на печать информации о количестве повторений каждого символа из третьего задания
-        static void PrintCharCount(Dictionary<char, int> charCount)
+        public static void PrintCharCount(Dictionary<char, int> charCount)
         {
             Console.WriteLine("Информация о количестве повторений каждого символа:");
             foreach (char ch in charCount.Keys.OrderBy(k => k))
@@ -163,7 +163,7 @@ namespace WebAPIMaximPractice.Controllers
 
         #region Методы Задание #4
         // Определение самой длинной подстроки начинающаяся и заканчивающаяся на гласную
-        static string FindLongestSubstring(string str)
+        public static string FindLongestSubstring(string str)
         {
             // Находим все подстроки, начинающиеся и заканчивающиеся на гласные
             MatchCollection matchCollection = Regex.Matches(str, @"[aeiouy][a-z]*[aeiouy]");
@@ -183,7 +183,7 @@ namespace WebAPIMaximPractice.Controllers
 
         #region Методы Задание #5
         // Спросить об желаемом алгоритме сортировки (Быстрая сортировка или Сортировка деревом)
-        static void AskSort(string str)
+        public static void AskSort(string str)
         {
             Console.WriteLine("Выберете метод сортировки:");
             Console.WriteLine("1. Быстрая сортировка");
@@ -211,13 +211,13 @@ namespace WebAPIMaximPractice.Controllers
             }
         }
 
-        static string QuickSort(string str)
+        public static string QuickSort(string str)
         {
             string sortedResult = string.Concat(str.ToString().OrderBy(c => c));
             return sortedResult;
         }
 
-        static string TreeSort(string str)
+        public static string TreeSort(string str)
         {
             TreeNode root = new TreeNode(str[0]);
             for (int i = 1; i < str.Length; i++)
